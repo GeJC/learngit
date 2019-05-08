@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from selenium import webdriver
 
 driver = webdriver.Ie()
@@ -23,3 +24,6 @@ driver.forward()
 driver.refresh()
 
 #driver.quit()
+=======
+
+>>>>>>> 3916d965150d64f780971c14768e32c50811a336
