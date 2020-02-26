@@ -13,7 +13,10 @@ import shutil
 
 
 # -*- coding: utf-8 -*-
-#如果添加默认路径，应当生成额外的本地数据文件（可能在多台机器上使用，不希望把路径存入数据库）
+
+#默认用户名数据文件
+#如果加入自动登录功能，在本地存储密码，需要数据加密，暂不考虑
+DefaultConfig = 'config.cfg'
 
 def selectPath(path):
     path_ = filedialog.askdirectory()
@@ -274,6 +277,9 @@ def denglu(username, passwd, top):
         else:
             e_name = signinUser['e_name']
             UserDBUrl = MongoFront + username + ":" + passwd + "@" + ServerUrl + username + InvoiceEnd
+            cfg = open(DefaultConfig, mode='w')
+            cfg.write(username)
+            cfg.close()
             top.destroy()
             main(username, passwd, UserDBUrl)
 
@@ -368,7 +374,11 @@ top.geometry('420x180+300+200')
 top.resizable(0, 0)
 Label(top, text="注册登录").grid(row=0, column=0)
 Label(top, text="用户名").grid(row=2, column=1)
+cfg = open(DefaultConfig, mode='r')
+default_name = cfg.read()
+cfg.close()
 username = Entry(top, width=40)
+username.insert(END, default_name)
 username.grid(row=2, column=2)
 Label(top, text="密码").grid(row=3, column=1)
 passwd = Entry(top, width=40, show='*')
