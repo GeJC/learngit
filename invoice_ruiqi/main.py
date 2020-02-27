@@ -374,7 +374,10 @@ top.geometry('420x180+300+200')
 top.resizable(0, 0)
 Label(top, text="注册登录").grid(row=0, column=0)
 Label(top, text="用户名").grid(row=2, column=1)
-cfg = open(DefaultConfig, mode='a+')
+if not os.path.isfile(DefaultConfig):
+    cfg = open(DefaultConfig, mode='w+')
+else:
+    cfg = open(DefaultConfig, mode='r')
 default_name = cfg.read()
 cfg.close()
 username = Entry(top, width=40)
