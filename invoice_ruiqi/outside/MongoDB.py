@@ -13,6 +13,8 @@ MongodbManagerUrl = "mongodb://localhost:27017/"
 InvoiceKindDict = {'TB_10100_info': 0, 'TB_10101_info': 0, 'TB_10102_info': 0, 'TB_10103_info': 1, 'TB_10505a_info': 2,
 'TB_10200_info': 3, 'TB_10400_info': 4, 'TB_10500_info': 5, 'TB_10503_info': 6, 'TB_10505_info':7, 'TB_10506_info': 8,
 'TB_20105_info': 9}
+FlightDict = {'from': '出发站', 'to': '到达站', 'flight_number': '航班号', 'date': '乘机日期', 'time': '乘机时间',
+              'seat': '座位等级', 'carrier': '承运人'}
 InvoiceKindList = [
 #增值税发票（专票，普票，电子发票）
 {'code': '发票代码','number': '发票号码','date': '开票日期','pretax_amount': '税前金额','total': '总金额','tax': '税额',
@@ -64,7 +66,7 @@ InvoiceKindList = [
 #航空运输电子客票行程单
 {'user_name': '乘机人姓名', 'user_id':'身份证号', 'number': '电子客票号码', 'check_code': '验证码', 'date': '填开日期',
  'agentcode': '销售单位代号', 'issue_by': '填开单位', 'fare': '票价', 'tax': '税费', 'fuel_surcharge': '燃油附加费',
- 'caac_development_fund': '民航发展基金', 'insurance': '保险费', 'total': '总金额', 'flights': '航班信息', 'kind':  '发票消费类型',
+ 'caac_development_fund': '民航发展基金', 'insurance': '保险费', 'total': '总金额', 'kind':  '发票消费类型', #单独列出'flights': '航班信息',
  'international_flag': '国内国际标签', 'print_number': '印刷序号',
  'stamp_info': '财务章识别内容', 'insert_date': '录入时间'},
 
@@ -359,6 +361,11 @@ def select_invoice_result(Url, path, start_day1, end_day1, start_day2, end_day2,
                 for key in sheettitle:
                     worksheet.write(0, i, sheettitle[key])
                     i = i + 1
+                if TB == 'TB_10506_info':
+                #flight details
+                    for fli in FlightDict:
+                        worksheet.write(0, i, FlightDict[fli])
+                        i = i + 1
             else:
                 sheettitle = mycol.find_one()
                 for key in mycol.find_one():
@@ -406,6 +413,13 @@ def select_invoice_result(Url, path, start_day1, end_day1, start_day2, end_day2,
                     if item in sub_result:
                         worksheet.write(rownum, list(sheettitle.keys()).index(item), str(sub_result[item]))
                     #colnum = colnum + 1
+                if TB == 'TB_10506_info':
+                #flight details
+                    tmpfli = 0 #flight details start at sheettitle + 1
+                    for fli in FlightDict:
+                        worksheet.write(rownum, len(sheettitle) + tmpfli, str(sub_result['flights'][0][fli]))
+                        tmpfli = tmpfli + 1
+
                 rownum = rownum + 1
 
     workbook.close()
