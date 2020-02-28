@@ -18,7 +18,7 @@ def zhuce():
     top_zhuce = Toplevel()
     top_zhuce.wm_attributes('-topmost', 1)
     top_zhuce.title('注册窗口')
-    top_zhuce.geometry('420x180+300+200')
+    top_zhuce.geometry('420x180+350+250')
     top_zhuce.resizable(0, 0)
     e_name = StringVar()
     e_number = StringVar()

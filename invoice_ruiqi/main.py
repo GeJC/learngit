@@ -34,6 +34,16 @@ def del_file(path):
                 os.remove(c_path)
         messagebox.showinfo("提示", "invoice删除成功！")
 
+#backup invoices, (cover/rename/skip(chosen now)/question, need more discuss) if same filename
+#backup all files, no filter now
+def backup(file):
+    dir = os.path.dirname(file)
+    bdir = os.path.join(dir, 'backup')
+    if not os.path.isdir(bdir):
+        os.mkdir(bdir)
+    if not os.path.isfile(os.path.join(bdir, os.path.basename(file))):
+        shutil.copy(file, bdir)
+    return
 
 def duplicate(Url, FoldPath,APP_KEY,APP_SECRET):
     #判断路径是否输入
@@ -45,6 +55,7 @@ def duplicate(Url, FoldPath,APP_KEY,APP_SECRET):
         files = file.file_name(FoldPath)  # 返回所有选择目录下所有图片路径的list
         flag = 0
         for sub_file in files:
+            backup(sub_file)
             result = recognize.testapi(sub_file, APP_KEY, APP_SECRET)
             for sub_result in result['response']['data']['identify_results']:
                 type = sub_result['type']
@@ -87,6 +98,7 @@ def verify(Url, FoldPath,APP_KEY,APP_SECRET,NUM,PASSWORD):
     list1024 = []
     listRuiQi = []
     for sub_file in files:
+        backup(sub_file)
         flag = 0
         result = recognize.testapi(sub_file, APP_KEY, APP_SECRET)  # 识别
         print(result)
