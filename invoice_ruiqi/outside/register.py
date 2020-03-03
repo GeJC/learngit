@@ -40,6 +40,7 @@ def zhuce():
     Label(top_zhuce, text="密码").grid(row=5, column=1)
     Label(top_zhuce, text="长度8-16位").grid(row=5, column=3)
     passwd = Entry(top_zhuce, width=40, textvariable=password, show='*')
+    passwd.bind('<Key>', lambda p:delPasswd(passwd, 16))
     passwd.grid(row=5, column=2)
     Label(top_zhuce, text="确认密码").grid(row=6, column=1)
     Label(top_zhuce, text="与密码相同").grid(row=6, column=3)
@@ -50,7 +51,17 @@ def zhuce():
         row=7, column=2, sticky=E, pady=4)
     mainloop()
 
+#限制输入长度，tkinter触发不稳定，小概率不能删除
+def delPasswd(p, lmt):
+    if len(p.get()) > lmt:
+        p.delete(lmt, END)
+
 def zhuce_command(user_name, e_name, e_number, password, que_password,top):
+    if len(user_name) > 50:
+    #mongodb库名长度不超过64个字符，username实际限制为52，用username作为库名的后果，未来考虑修改
+        messagebox.showerror("错误", "用户名长度过长，请重新输入")
+    if len(password) < 8 or len(password) > 16:
+        messagebox.showerror("错误", "密码长度需要在8-16位之间，请重新输入")
     if password != que_password:
         messagebox.showerror("错误", "密码确认有误，请重新输入")
     else :
