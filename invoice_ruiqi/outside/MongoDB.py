@@ -114,8 +114,10 @@ Name_RQ_dict = {'remark': 'remark', 'date': 'date', 'pretax_amount': 'pretax_amo
                 'issuer': 'issuer', 'receiptor': 'receiptor', 'reviewer': 'reviewer', 'item_names': 'item_names',
                 'check_state': 'check_state'}
 
-
-
+#flag for filter, enable if true
+thisFlag = False
+#invoice list for this time
+invoicethisList = []
 
 #11/22 fix register & sign in, using unique user_info database
 #Future TODO:
@@ -328,7 +330,7 @@ def update_invoiceRQ_info(Url, invoiceRQ_dict, faplx):
     mycol.update_one({'code': invoiceRQ_dict['code'], 'number': invoiceRQ_dict['number']}, {"$set": find_invoice})
     return
 
-def select_invoice_result(Url, path, start_day1, end_day1, start_day2, end_day2, CheckVar4):
+def select_invoice_result(Url, path, start_day1, end_day1, start_day2, end_day2, CheckVarall, CheckVarkind, CheckVartime):
     myclient = pymongo.MongoClient(Url)  # 连接DB
     mydb = myclient[Url.split(ServerUrl)[-1]]  # 创建DB
     TB_list1 = ['TB_10100_info', 'TB_10101_info', 'TB_10102_info', 'TB_10103_info', 'TB_10104_info', 'TB_10105_info', 'TB_10105a_info', 'TB_10200_info', 'TB_10400_info', 'TB_10500_info', 'TB_10503_info', 'TB_10505_info', 'TB_10506_info', 'TB_10507_info', 'TB_20105_info']
@@ -339,7 +341,7 @@ def select_invoice_result(Url, path, start_day1, end_day1, start_day2, end_day2,
 
 
     #挑选展示发票种类
-    if CheckVar4 == 0:
+    if CheckVarkind == 0:
         TB_list = TB_list1
     else:
         TB_list = TB_list2
@@ -377,33 +379,47 @@ def select_invoice_result(Url, path, start_day1, end_day1, start_day2, end_day2,
 
             #workbook.close()
 
-            #查询数据
-            if start_day1 == '':
-                start_day1 = str(time.strftime("%Y%m%d", time.localtime()))
-            else:
-                start_day1 = start_day1[:4]+start_day1[4:6]+start_day1[-2:]
+            if CheckVartime == 1:
+            #开启按时间筛选
+                if start_day1 == '':
+                    start_day1 = str(time.strftime("%Y%m%d", time.localtime()))
+                else:
+                    start_day1 = start_day1[:4]+start_day1[4:6]+start_day1[-2:]
 
-            if end_day1 == '':
-                end_day1 = str(time.strftime("%Y%m%d", time.localtime()))
-            else:
-                end_day1 = end_day1[:4]+end_day1[4:6]+end_day1[-2:]
+                if end_day1 == '':
+                    end_day1 = str(time.strftime("%Y%m%d", time.localtime()))
+                else:
+                    end_day1 = end_day1[:4]+end_day1[4:6]+end_day1[-2:]
 
-            if start_day2 == '':
-                start_day2 = str(time.strftime("%Y%m%d", time.localtime()))
-            else:
-                start_day2 = start_day2[:4]+start_day2[4:6]+start_day2[-2:]
+                if start_day2 == '':
+                    start_day2 = str(time.strftime("%Y%m%d", time.localtime()))
+                else:
+                    start_day2 = start_day2[:4]+start_day2[4:6]+start_day2[-2:]
 
-            if end_day2 == '':
-                end_day2 = str(time.strftime("%Y%m%d", time.localtime()))
-            else:
-                end_day2 = end_day2[:4]+end_day2[4:6]+end_day2[-2:]
+                if end_day2 == '':
+                    end_day2 = str(time.strftime("%Y%m%d", time.localtime()))
+                else:
+                    end_day2 = end_day2[:4]+end_day2[4:6]+end_day2[-2:]
 
-            #正则查询
-            if TB in {'TB_10200_info', 'TB_10506_info'}:
-                result = mycol.find({"insert_date": {"$gte": start_day1, "$lte": end_day1}})
+                #正则查询
+                if TB in {'TB_10200_info', 'TB_10506_info'}:
+                    result = mycol.find({"insert_date": {"$gte": start_day1, "$lte": end_day1}})
+                else:
+                    result = mycol.find({"date": {"$gte": start_day2, "$lte": end_day2}, "insert_date": {"$gte": start_day1, "$lte": end_day1}})
             else:
-                result = mycol.find({"date": {"$gte": start_day2, "$lte": end_day2}, "insert_date": {"$gte": start_day1, "$lte": end_day1}})
+                result = mycol.find()
+            #print(result)
 
+            if CheckVarall == 0:
+            #按本次发票筛选
+                tmpresult = []
+                for sub_result in result:
+                    tmpcode = 0
+                    if 'code' in sub_result:
+                        tmpcode = sub_result['code']
+                    if [tmpcode, sub_result['number']] in invoicethisList:
+                        tmpresult.append(sub_result)
+                result = tmpresult
             #写入数据
             rownum = 1
             for sub_result in result:
