@@ -478,8 +478,8 @@ def main(username, passwd, Url):
 
     Button(master, text='选择路径', command=lambda: selectPath(path1), width='10').grid(row=2, column=2, sticky=W, pady=4)
 
-    Button(master, text='识别查重', command=lambda: run_dup(Url, path1.get(), e_info), width='10').grid(row=4, column=0, sticky=N, pady=4)
-    Button(master, text='发票验真', command=lambda: run_ver(Url, path1.get(), e_info), width='10').grid(row=4, column=1, sticky=N, pady=4)
+    Button(master, text='识别+查重', command=lambda: run_dup(Url, path1.get(), e_info), width='10').grid(row=4, column=0, sticky=N, pady=4)
+    Button(master, text='识别+查重+验真', command=lambda: run_ver(Url, path1.get(), e_info), width='16').grid(row=4, column=1, sticky=N, pady=4)
     Button(master, text='票库导出', command=lambda: outputTK(Url), width='10').grid(row=4, column=2, sticky=N, pady=4)
 
     #Button(master, text='删除发票', width='10', command=lambda: del_file(path.get())).grid(row=2, column=4, sticky=W, pady=4)
