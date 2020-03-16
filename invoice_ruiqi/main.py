@@ -4,6 +4,7 @@ from outside import file
 from outside import recognize
 from outside import t10231024
 from tkinter import messagebox
+from tkinter import font
 import os
 import time
 from outside import MongoDB
@@ -360,7 +361,7 @@ def outputTK(Url):
     top_out = Toplevel()
     top_out.attributes('-topmost', 1)
     top_out.title('票库导出')
-    top_out.geometry('580x220+300+365')
+    top_out.geometry('580x220+300+385')
 
     start_day1 = StringVar()
     end_day1 = StringVar()
@@ -427,7 +428,7 @@ def main(username, passwd, Url):
     master = Tk()
     master.wm_attributes('-topmost', 1)
     master.title('发票自动识别验真')
-    master.geometry('520x180+300+150')
+    master.geometry('520x200+300+150')
     #master.iconbitmap('favicon.ico')
     master.resizable(0, 0)
     CheckVar1 = IntVar()
@@ -441,6 +442,8 @@ def main(username, passwd, Url):
     start_day2 = StringVar()
     end_day2 = StringVar()
 
+    frm1 = Frame(master)
+    frm1.grid(row=0, column=0)
 
     '''
     C1 = Checkbutton(master, text="识别查重", variable=CheckVar1, onvalue=1, offvalue=0, height=2, width=20)
@@ -460,27 +463,43 @@ def main(username, passwd, Url):
     e_number = e_info['e_number']
     APP_KEY = e_info['APP_KEY']
     APP_SECRET = e_info['APP_SECRET']
-    Label(master, text='公司名：').grid(row=0, column=0)
-    Label(master, text='公司税号：').grid(row=1, column=0)
-    Label(master, text=e_name).grid(row=0, column=1, sticky=W)
-    Label(master, text=e_number).grid(row=1, column=1, sticky=W)
+    Label(frm1, text='公司名：').grid(row=0, column=1)
+    Label(frm1, text='公司税号：').grid(row=1, column=1)
+    Label(frm1, text=e_name).grid(row=0, column=2, sticky=W)
+    Label(frm1, text=e_number).grid(row=1, column=2, sticky=W)
 
 
-    Label(master, text="发票路径：").grid(row=2)
-    Entry(master, width=45, textvariable=path1).grid(row=2, column=1)
+    Label(frm1, text="发票路径：").grid(row=2, column=1)
+    Entry(frm1, width=45, textvariable=path1).grid(row=2, column=2)
 
     cishu = info.test_info(APP_KEY, APP_SECRET)
     dapiao = cishu['response']['user_info']['big_usage']
     xiaopiao = cishu['response']['user_info']['small_usage']
     dinge = cishu['response']['user_info']['quota_usage']
-    Label(master, text="大票已识别：" + str(dapiao) + "次 小票已识别：" + str(xiaopiao) + "次 定额已识别：" + str(dinge) + "次").grid(row=10, column=1, sticky=W, pady=4)
 
+    Label(frm1, text="    ").grid(row=9, column=0)
 
-    Button(master, text='选择路径', command=lambda: selectPath(path1), width='10').grid(row=2, column=2, sticky=W, pady=4)
+    frm2 = Frame(master)
+    frm2.grid(row=1, column=0)
+    uft = font.Font(family = font.nametofont("TkDefaultFont").cget("family"), size = 9, underline = 1)
+    dcnt = Label(frm2, text="大票")
+    dcnt.grid(row=1, column=1, sticky=W, pady=4)
+    dcnt.configure(font = uft, fg = 'blue')
+    Label(frm2, text="已识别：" + str(dapiao) + "次  ").grid(row=1, column=2, sticky=W, pady=4)
+    xcnt = Label(frm2, text="小票")
+    xcnt.grid(row=1, column=3, sticky=W, pady=4)
+    xcnt.configure(font = uft, fg = 'blue')
+    Label(frm2, text="已识别：" + str(xiaopiao) + "次  ").grid(row=1, column=4, sticky=W, pady=4)
+    ecnt = Label(frm2, text="定额")
+    ecnt.grid(row=1, column=5, sticky=W, pady=4)
+    ecnt.configure(font = uft, fg = 'blue')
+    Label(frm2, text="已识别：" + str(dinge) + "次").grid(row=1, column=6, sticky=W, pady=4)
 
-    Button(master, text='识别+查重', command=lambda: run_dup(Url, path1.get(), e_info), width='10').grid(row=4, column=0, sticky=N, pady=4)
-    Button(master, text='识别+查重+验真', command=lambda: run_ver(Url, path1.get(), e_info), width='16').grid(row=4, column=1, sticky=N, pady=4)
-    Button(master, text='票库导出', command=lambda: outputTK(Url), width='10').grid(row=4, column=2, sticky=N, pady=4)
+    Button(frm1, text='选择路径', command=lambda: selectPath(path1), width='10').grid(row=2, column=3, sticky=W, pady=4)
+
+    Button(frm1, text='识别+查重', command=lambda: run_dup(Url, path1.get(), e_info), width='10').grid(row=4, column=1, sticky=N, pady=4)
+    Button(frm1, text='识别+查重+验真', command=lambda: run_ver(Url, path1.get(), e_info), width='16').grid(row=4, column=2, sticky=N, pady=4)
+    Button(frm1, text='票库导出', command=lambda: outputTK(Url), width='10').grid(row=4, column=3, sticky=N, pady=4)
 
     #Button(master, text='删除发票', width='10', command=lambda: del_file(path.get())).grid(row=2, column=4, sticky=W, pady=4)
     #Button(master, text='执行', width='9', bd='3', relief=RAISED, fg="blue", command=lambda: run_button(Url, CheckVar1.get(), CheckVar2.get(), CheckVar3.get(), CheckVar4.get(), path1.get(), path2.get(), e1.get(), e2.get(), e3.get(), e4.get(), e_info)).grid(row=6, column=2, pady=4)
@@ -493,7 +512,8 @@ top.wm_attributes('-topmost', 1)
 top.title('注册登录窗口')
 top.geometry('420x180+300+200')
 top.resizable(0, 0)
-Label(top, text="注册登录").grid(row=0, column=0)
+Label(top, text="      ").grid(row=0, column=0)
+Label(top, text="      ").grid(row=1, column=0)
 Label(top, text="用户名").grid(row=2, column=1)
 if not os.path.isfile(DefaultConfig):
     cfg = open(DefaultConfig, mode='w+')
@@ -507,6 +527,7 @@ username.grid(row=2, column=2)
 Label(top, text="密码").grid(row=3, column=1)
 passwd = Entry(top, width=40, show='*')
 passwd.grid(row=3, column=2)
+Label(top, text="    ").grid(row=4, column=0)
 Button(top, text='注册', bd='3', relief=RAISED, command=lambda: zhuce()).grid(row=6, column=2, sticky=W, pady=4)
 Button(top, text='登录', bd='3', relief=RAISED, command=lambda: denglu(username.get(), passwd.get(), top)).grid(row=6, column=2, sticky=E, pady=4)
 top.mainloop()
