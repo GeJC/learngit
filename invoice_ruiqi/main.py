@@ -361,7 +361,8 @@ def outputTK(Url):
     top_out = Toplevel()
     top_out.attributes('-topmost', 1)
     top_out.title('票库导出')
-    top_out.geometry('580x220+300+385')
+    top_out.geometry('550x220+300+385')
+    top_out.resizable(0, 0)
 
     start_day1 = StringVar()
     end_day1 = StringVar()
@@ -372,42 +373,45 @@ def outputTK(Url):
     CheckVartime = IntVar()
     path2 = StringVar()
 
-    Label(top_out, text="结果路径：").grid(row=0)
-    Entry(top_out, width=45, textvariable=path2).grid(row=0, column=1)
-    Button(top_out, text='选择路径', command=lambda: selectPath(path2), width='10').grid(row=0, column=2, sticky=W, pady=4)
-    Button(top_out, text='票库导出', command=lambda: run_out(Url, path2.get(), e1.get(), e2.get(), e3.get(), e4.get(),
-        CheckVarall.get(), CheckVarkind.get(), CheckVartime.get()), width='10').grid(row=1, column=2, sticky=W, pady=4)
+    Label(top_out, text="    ").grid(row=0, column=4)
+    Label(top_out, text="    ").grid(row=0, column=0)
 
-    Label(top_out, text="起始入库日期(YYYYMMDD)").grid(row=7, column=0)
+    Label(top_out, text="    结果路径：").grid(row=0, column=1)
+    Entry(top_out, width=45, textvariable=path2).grid(row=0, column=2, columnspan=2)
+    Button(top_out, text='选择路径', command=lambda: selectPath(path2), width='10').grid(row=0, column=5, sticky=W, pady=4)
+    Button(top_out, text='票库导出', command=lambda: run_out(Url, path2.get(), e1.get(), e2.get(), e3.get(), e4.get(),
+        CheckVarall.get(), CheckVarkind.get(), CheckVartime.get()), width='10').grid(row=1, column=5, sticky=W, pady=4)
+
+    Label(top_out, text="起始入库日期").grid(row=7, column=1)
     e1 = Entry(top_out, width=10, textvariable=start_day1)
     e1.insert(END, str(time.strftime("%Y%m%d", time.localtime())))
-    e1.grid(row=7, column=1, sticky=W)
+    e1.grid(row=7, column=2, sticky=W)
     e1.config(state='disabled')
 
-    Label(top_out, text="终止入库日期(YYYYMMDD)").grid(row=8, column=0)
+    Label(top_out, text="终止入库日期").grid(row=8, column=1)
     e2 = Entry(top_out, width=10, textvariable=end_day1)
     e2.insert(END, str(time.strftime("%Y%m%d", time.localtime())))
-    e2.grid(row=8, column=1, sticky=W)
+    e2.grid(row=8, column=2, sticky=W)
     e2.config(state='disabled')
 
-    Label(top_out, text="起始开票日期(YYYYMMDD)").grid(row=7, column=1, sticky=E)
+    Label(top_out, text="起始开票日期").grid(row=7, column=2, sticky=E)
     e3 = Entry(top_out, width=10, textvariable=start_day2)
     e3.insert(END, str(time.strftime("%Y%m%d", time.localtime())))
-    e3.grid(row=7, column=2, sticky=W)
+    e3.grid(row=7, column=3, sticky=W)
     e3.config(state='disabled')
 
-    Label(top_out, text="终止开票日期(YYYYMMDD)").grid(row=8, column=1, sticky=E)
+    Label(top_out, text="终止开票日期").grid(row=8, column=2, sticky=E)
     e4 = Entry(top_out, width=10, textvariable=end_day2)
     e4.insert(END, str(time.strftime("%Y%m%d", time.localtime())))
-    e4.grid(row=8, column=2, sticky=W)
+    e4.grid(row=8, column=3, sticky=W)
     e4.config(state='disabled')
 
     Rthis = Radiobutton(top_out, text='本次发票', variable=CheckVarall, value='0')
     Rall = Radiobutton(top_out, text='全部发票', variable=CheckVarall, value='1')
-    Rtime = Checkbutton(top_out, text='按时间筛选', command=lambda :changetimeflag(e1,e2,e3,e4), variable=CheckVartime)
-    Rthis.grid(row=1, column=1, sticky=W, pady=4)
-    Rall.grid(row=1, column=1, pady=4)
-    Rtime.grid(row=3, column=1, sticky=W, pady=4)
+    Rtime = Checkbutton(top_out, text='按时间筛选(YYYYMMDD)', command=lambda :changetimeflag(e1,e2,e3,e4), variable=CheckVartime)
+    Rthis.grid(row=1, column=2, sticky=W, pady=4)
+    Rall.grid(row=1, column=3, sticky=W, pady=4)
+    Rtime.grid(row=3, column=2, sticky=W, pady=4)
 
     if MongoDB.thisFlag:
     #select invoices this time/all, using MongoDB.thisFlag as global variable
@@ -419,9 +423,23 @@ def outputTK(Url):
     R1 = Radiobutton(top_out, text='全票种', variable=CheckVarkind, value='0')
     R2 = Radiobutton(top_out, text='抵扣税票种', variable=CheckVarkind, value='1')
     R1.select()
-    R1.grid(row=2, column=1, sticky=W, pady=4)
-    R2.grid(row=2, column=1, pady=4)
+    R1.grid(row=2, column=2, sticky=W, pady=4)
+    R2.grid(row=2, column=3, sticky=W, pady=4)
     top_out.mainloop()
+
+KindDescriptList = ['增值税专用发票，增值税普通发票，增值税电子普通发票，增值税普通发票(卷票)，机动车销售统一发票，二手车销售统一发票',
+                    '机打发票，出租车发票，火车票，客运汽车，航空运输电子客票行程单，过路费发票，可报销其他发票，国际小票，滴滴出行行程单，完税证明',
+                    '定额发票']
+
+#explain count info
+def countInfoPointed(countinfo, index):
+    infotop = Toplevel()
+    infotop.overrideredirect(True)
+    infotop.geometry("%sx%s+%s+%s" % (205, 80, countinfo.winfo_pointerx(), countinfo.winfo_pointery() + 20))
+    infotop.wm_attributes('-topmost',1)
+    Label(infotop, text=KindDescriptList[index], wraplength=200, justify='left').grid(row=1, column=1)
+    countinfo.bind("<Leave>", lambda _: infotop.destroy())
+
 
 def main(username, passwd, Url):
     #print(Url)
@@ -482,18 +500,21 @@ def main(username, passwd, Url):
     frm2 = Frame(master)
     frm2.grid(row=1, column=0)
     uft = font.Font(family = font.nametofont("TkDefaultFont").cget("family"), size = 9, underline = 1)
-    dcnt = Label(frm2, text="大票")
-    dcnt.grid(row=1, column=1, sticky=W, pady=4)
+    dcnt = Label(frm2, text="大票", borderwidth=0)
+    dcnt.grid(row=1, column=1, sticky=W)
     dcnt.configure(font = uft, fg = 'blue')
-    Label(frm2, text="已识别：" + str(dapiao) + "次  ").grid(row=1, column=2, sticky=W, pady=4)
-    xcnt = Label(frm2, text="小票")
-    xcnt.grid(row=1, column=3, sticky=W, pady=4)
+    dcnt.bind("<Enter>", lambda _: countInfoPointed(dcnt, 0))
+    Label(frm2, text="已识别：" + str(dapiao) + "次    ", borderwidth=0).grid(row=1, column=2, sticky=W)
+    xcnt = Label(frm2, text="小票", borderwidth=0)
+    xcnt.grid(row=1, column=3, sticky=W)
     xcnt.configure(font = uft, fg = 'blue')
-    Label(frm2, text="已识别：" + str(xiaopiao) + "次  ").grid(row=1, column=4, sticky=W, pady=4)
-    ecnt = Label(frm2, text="定额")
-    ecnt.grid(row=1, column=5, sticky=W, pady=4)
+    xcnt.bind("<Enter>", lambda _: countInfoPointed(xcnt, 1))
+    Label(frm2, text="已识别：" + str(xiaopiao) + "次    ", borderwidth=0).grid(row=1, column=4, sticky=W)
+    ecnt = Label(frm2, text="定额", borderwidth=0)
+    ecnt.grid(row=1, column=5, sticky=W)
     ecnt.configure(font = uft, fg = 'blue')
-    Label(frm2, text="已识别：" + str(dinge) + "次").grid(row=1, column=6, sticky=W, pady=4)
+    ecnt.bind("<Enter>", lambda _: countInfoPointed(ecnt, 2))
+    Label(frm2, text="已识别：" + str(dinge) + "次", borderwidth=0).grid(row=1, column=6, sticky=W)
 
     Button(frm1, text='选择路径', command=lambda: selectPath(path1), width='10').grid(row=2, column=3, sticky=W, pady=4)
 
