@@ -24,7 +24,7 @@ def zhuce():
     e_number = StringVar()
     password = StringVar()
     que_password = StringVar()
-    Label(top_zhuce, text="注册").grid(row=0, column=0)
+    Label(top_zhuce, text="        ").grid(row=0, column=0)
     Label(top_zhuce, text="用户名").grid(row=2, column=1)
     Label(top_zhuce, text="企业邮箱地址").grid(row=2, column=3)
     username = Entry(top_zhuce, width=40)
