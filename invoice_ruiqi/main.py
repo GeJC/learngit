@@ -294,7 +294,8 @@ def denglu(username, passwd, top):
             messagebox.showerror("错误", "尚未取得权限，请联系管理员")
         else:
             e_name = signinUser['e_name']
-            UserDBUrl = MongoFront + username + ":" + passwd + "@" + ServerUrl + username + InvoiceEnd
+            UserDBUrl = MongoManagerUrl + username + InvoiceEnd
+            #UserDBUrl = MongoFront + username + ":" + passwd + "@" + ServerUrl + username + InvoiceEnd
             cfg = open(DefaultConfig, mode='w')
             cfg.write(username)
             cfg.close()
