@@ -120,12 +120,13 @@ def verify(Url, FoldPath,APP_KEY,APP_SECRET,NUM,PASSWORD):
                         duplicate_flag = True
                         messagebox.showwarning('警告', '发票代码：' + detail_dict['code'] + ',发票号码：' + detail_dict['number'] + '是重复发票')
                     else:
-                        detail_dict['date'] = detail_dict['date'][:4] + detail_dict['date'][5:7] + detail_dict['date'][8:10]
+                        if 'date' in detail_dict:
+                            detail_dict['date'] = detail_dict['date'][:4] + detail_dict['date'][5:7] + detail_dict['date'][8:10]
                         MongoDB.insert_invoice_info(Url, detail_dict, type)
 
                 # 不查重的票直接入库
                 else:
-                    if type != '10200' and type != '10506':
+                    if type != '10200' and type != '10506' and 'date' in detail_dict:
                         detail_dict['date'] = detail_dict['date'][:4] + detail_dict['date'][5:7] + detail_dict['date'][8:10]
                         MongoDB.insert_invoice_info(Url, detail_dict, type)
                     else:
