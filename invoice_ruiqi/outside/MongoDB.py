@@ -12,7 +12,7 @@ MongodbManagerUrl = "mongodb://localhost:27017/"
 
 InvoiceKindDict = {'TB_10100_info': 0, 'TB_10101_info': 0, 'TB_10102_info': 0, 'TB_10103_info': 1, 'TB_10505a_info': 2,
 'TB_10200_info': 3, 'TB_10400_info': 4, 'TB_10500_info': 5, 'TB_10503_info': 6, 'TB_10505_info':7, 'TB_10506_info': 8,
-'TB_20105_info': 9}
+'TB_20105_info': 9, 'TB_10900_info': 10}
 FlightDict = {'from': '出发站', 'to': '到达站', 'flight_number': '航班号', 'date': '乘机日期', 'time': '乘机时间',
               'seat': '座位等级', 'carrier': '承运人'}
 InvoiceKindList = [
@@ -72,7 +72,10 @@ InvoiceKindList = [
 
 #滴滴出行行程单
 {'date': '申请日期', 'date_start': '行程开始时间', 'date_end': '行程结束时间', 'phone': '行程人手机号', 'total': '总计',
- 'items': '行程信息', 'stamp_info': '财务章识别内容', 'insert_date': '录入时间'}
+ 'items': '行程信息', 'stamp_info': '财务章识别内容', 'insert_date': '录入时间'},
+
+#其他
+{'code': '发票代码', 'number': '发票号码', 'total': '总金额', 'kind': '发票消费类型'}
 ]
 
 #xls output title
@@ -96,7 +99,7 @@ DB_dict = {'10100': 'TB_10100_info', '004': 'TB_10100_info', '10101': 'TB_10101_
            '025': 'TB_10103_info', '10104': 'TB_10104_info', '005': 'TB_10104_info', '10105': 'TB_10105_info',
            '10105a': 'TB_10105a_info', '10200': 'TB_10200_info', '10400': 'TB_10400_info', '10500': 'TB_10500_info',
            '10503': 'TB_10503_info', '10505': 'TB_10505_info', '10506': 'TB_10506_info', '10507': 'TB_10507_info',
-           '20105': 'TB_20105_info'}
+           '20105': 'TB_20105_info', '10900': 'TB_10900_info'}
 
 #check 1024 二手车10105接口暂不开放，暂不查验
 DB_check_dict = {'10100': 'TB_10100_info', '004': 'TB_10100_info', '10101': 'TB_10101_info', '007': 'TB_10101_info',
@@ -333,9 +336,9 @@ def update_invoiceRQ_info(Url, invoiceRQ_dict, faplx):
 def select_invoice_result(Url, path, start_day1, end_day1, start_day2, end_day2, CheckVarall, CheckVarkind, CheckVartime):
     myclient = pymongo.MongoClient(Url)  # 连接DB
     mydb = myclient[Url.split(ServerUrl)[-1]]  # 创建DB
-    TB_list1 = ['TB_10100_info', 'TB_10101_info', 'TB_10102_info', 'TB_10103_info', 'TB_10104_info', 'TB_10105_info', 'TB_10105a_info', 'TB_10200_info', 'TB_10400_info', 'TB_10500_info', 'TB_10503_info', 'TB_10505_info', 'TB_10506_info', 'TB_10507_info', 'TB_20105_info']
+    TB_list1 = ['TB_10100_info', 'TB_10101_info', 'TB_10102_info', 'TB_10103_info', 'TB_10104_info', 'TB_10105_info', 'TB_10105a_info', 'TB_10200_info', 'TB_10400_info', 'TB_10500_info', 'TB_10503_info', 'TB_10505_info', 'TB_10506_info', 'TB_10507_info', 'TB_20105_info', 'TB_10900_info']
     TB_list2 = ['TB_10503_info', 'TB_10505_info', 'TB_10506_info']
-    TB_dict = {'TB_10100_info': '增值税专用发票', 'TB_10101_info': '增值税普通发票', 'TB_10102_info': '增值税电子普通发票', 'TB_10103_info': '增值税普通发票(卷票)', 'TB_10104_info': '机动车销售统一发票', 'TB_10105_info': '二手车销售统一发票', 'TB_10505a_info':'船票', 'TB_10200_info': '定额发票', 'TB_10400_info': '机打发票', 'TB_10500_info': '出租车发票', 'TB_10503_info': '火车票', 'TB_10505_info': '客运汽车', 'TB_10506_info': '航空运输电子客票行程单', 'TB_10507_info': '过路费发票', 'TB_20105_info': '滴滴出行行程单'}
+    TB_dict = {'TB_10100_info': '增值税专用发票', 'TB_10101_info': '增值税普通发票', 'TB_10102_info': '增值税电子普通发票', 'TB_10103_info': '增值税普通发票(卷票)', 'TB_10104_info': '机动车销售统一发票', 'TB_10105_info': '二手车销售统一发票', 'TB_10505a_info':'船票', 'TB_10200_info': '定额发票', 'TB_10400_info': '机打发票', 'TB_10500_info': '出租车发票', 'TB_10503_info': '火车票', 'TB_10505_info': '客运汽车', 'TB_10506_info': '航空运输电子客票行程单', 'TB_10507_info': '过路费发票', 'TB_20105_info': '滴滴出行行程单', 'TB_10900_info': '其他发票'}
     #11/21 fix output
 
 
