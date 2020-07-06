@@ -7,9 +7,9 @@ from outside import MongoDB
 
 #TODO: change server
 MongoFront = "mongodb://"
-ServerUrl = "123.177.21.138:27017/"
+ServerUrl = "123.177.20.76:27017/"
 #ServerUrl = "localhost:27017/"
-MongoManagerUrl = "mongodb://123.177.21.138:27017/"
+MongoManagerUrl = "mongodb://123.177.20.76:27017/"
 #MongoManagerUrl = "mongodb://localhost:27017/"
 UserEnd = "user_info"
 InvoiceEnd = "_DB_invoice_info"
