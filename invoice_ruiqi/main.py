@@ -443,6 +443,9 @@ def countInfoPointed(countinfo, index):
     Label(infotop, text=KindDescriptList[index], wraplength=200, justify='left').grid(row=1, column=1)
     countinfo.bind("<Leave>", lambda _: infotop.destroy())
 
+#press enter to change input
+def usernameEnter(username):
+    username.focus_set()
 
 def main(username, passwd, Url):
     #print(Url)
@@ -560,4 +563,6 @@ passwd.grid(row=3, column=2)
 Label(top, text="    ").grid(row=4, column=0)
 Button(top, text='注册', bd='3', relief=RAISED, command=lambda: zhuce()).grid(row=6, column=2, sticky=W, pady=4)
 Button(top, text='登录', bd='3', relief=RAISED, command=lambda: denglu(username.get(), passwd.get(), top)).grid(row=6, column=2, sticky=E, pady=4)
+username.bind("<Return>", lambda _: usernameEnter(passwd))
+passwd.bind("<Return>", lambda _: denglu(username.get(), passwd.get(), top))
 top.mainloop()
