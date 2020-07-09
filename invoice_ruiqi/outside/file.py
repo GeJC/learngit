@@ -1,33 +1,48 @@
 import os
+import shutil
 import zipfile
 import time
 
 fileTypeList = ['ffd8ff', '89504e47', '255044462d312e']
 #jpg, png, pdf
 
+#backup invoices, (cover/rename/skip(chosen now)/question, need more discuss) if same filename
+#backup all files, no filter now
+#os.walk遍历文件夹下所有子目录，backup位置修改为工作文件夹外
+def backup(file, bdir):
+    if not os.path.isdir(bdir):
+        os.mkdir(bdir)
+    if not os.path.isfile(os.path.join(bdir, os.path.basename(file))):
+        shutil.copy(file, bdir)
+    return
+
 
 def file_name(file_dir):
+    retfiles = []
+    bdir = os.path.join(os.path.dirname(file_dir), 'backup')
     for root, dirs, files in os.walk(file_dir):
+        root = root.replace('\\','/')
         print('root_dir:', root)  # 当前目录路径
         print('sub_dirs:', dirs)  # 当前路径下所有子目录
         print('files:', files)  # 当前路径下所有非目录子文件
-    retfiles = []
-    for i in range(len(files)):
-        files[i] = root + '/' + files[i]
-        #文件类型检查，只处理jpg/png/pdf类型，以文件头为准
-        binfile = open(files[i], 'rb')
-        bins = binfile.read(20)
-        binfile.close()
-        hexstr = u""
-        for bit in range(len(bins)):
-            t = u"%x" % bins[bit]
-            if len(t) % 2:
-                hexstr += u"0"
-            hexstr += t
-        bins = hexstr.lower()
-        for tp in fileTypeList:
-            if bins[:len(tp)] == tp:
-                retfiles.append(files[i])
+        bbdir = root.replace(file_dir, bdir) # 备份文件夹
+        for i in range(len(files)):
+            files[i] = root + '/' + files[i]
+            #文件类型检查，只处理jpg/png/pdf类型，以文件头为准
+            binfile = open(files[i], 'rb')
+            bins = binfile.read(20)
+            binfile.close()
+            hexstr = u""
+            for bit in range(len(bins)):
+                t = u"%x" % bins[bit]
+                if len(t) % 2:
+                    hexstr += u"0"
+                hexstr += t
+            bins = hexstr.lower()
+            for tp in fileTypeList:
+                if bins[:len(tp)] == tp:
+                    retfiles.append(files[i])
+                    backup(files[i], bbdir)
     print(retfiles)
     return retfiles
 

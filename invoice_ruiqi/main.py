@@ -36,25 +36,12 @@ def del_file(path):
                 os.remove(c_path)
         messagebox.showinfo("提示", "invoice删除成功！")
 
-#backup invoices, (cover/rename/skip(chosen now)/question, need more discuss) if same filename
-#backup all files, no filter now
-#os.walk遍历文件夹下所有子目录，backup位置修改为工作文件夹外
-def backup(file):
-    dir = os.path.dirname(os.path.dirname(file))
-    bdir = os.path.join(dir, 'backup')
-    if not os.path.isdir(bdir):
-        os.mkdir(bdir)
-    if not os.path.isfile(os.path.join(bdir, os.path.basename(file))):
-        shutil.copy(file, bdir)
-    return
-
 def duplicate(Url, FoldPath,APP_KEY,APP_SECRET):
     if len(FoldPath) > 0:  # 如果路径不是空的话
         files = file.file_name(FoldPath)  # 返回所有选择目录下所有图片路径的list
         flag = 0
         MongoDB.invoicethisList = []
         for sub_file in files:
-            backup(sub_file)
             result = recognize.testapi(sub_file, APP_KEY, APP_SECRET)
             for sub_result in result['response']['data']['identify_results']:
                 type = sub_result['type']
@@ -99,7 +86,6 @@ def verify(Url, FoldPath,APP_KEY,APP_SECRET,NUM,PASSWORD):
         listRuiQi = []
         MongoDB.invoicethisList = []
         for sub_file in files:
-            backup(sub_file)
             flag = 0
             result = recognize.testapi(sub_file, APP_KEY, APP_SECRET)  # 识别
             print(result)
