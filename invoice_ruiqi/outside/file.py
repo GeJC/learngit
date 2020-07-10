@@ -20,6 +20,8 @@ def backup(file, bdir):
 def file_name(file_dir):
     retfiles = []
     bdir = os.path.join(os.path.dirname(file_dir), 'backup')
+    if not os.path.isdir(bdir):
+        os.mkdir(bdir)
     for root, dirs, files in os.walk(file_dir):
         root = root.replace('\\','/')
         print('root_dir:', root)  # 当前目录路径
